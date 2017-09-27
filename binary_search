@@ -1,0 +1,61 @@
+#binary search notes
+>Usually we use binary search algorithm to search for the __exact__ item in an ordered array.  
+The algorithm itself is simple but it can be tricky when dealing with some edge cases.
+
+######A simple __exact__ match algorithm:  
+```go
+package main
+
+// start and end index are inclusive
+func BinarySearch(array []int, start, end, target int) int {
+    if start < 0 || end >= len(array) {
+        return -1
+    }
+    for start <= end {
+        mid := start + (end-start)/2
+        if array[mid] > target {
+            end = mid - 1
+        } else if array[mid] < target {
+            start = mid + 1
+        } else {
+            return mid
+        }
+    }
+    return -1
+}
+```
+The above algorithm works as expected when we just want to find the target index in array (if does exist return -1).  
+If we want to get the closest item if not found (instead of return -1), we can simply change the last return statement to:  
+`return start` is to return the closest item bigger than target  
+`return end` is to return the closest item smaller than target  
+this will be useful when finding the position to insert the target (insert at the index of the equal or bigger element, in this case we return `start`)
+
+######Count all element on left (right) side
+what if we want to find out how many items are less or equal to the target on the left side?
+(or bigger or equal on the right side)  
+The previous algorithm will not work out when there are duplicate items of the target inside the array  
+
+Eg. for [1,2,3,3,4,7,8] given target as `3` we want to get [1,2,3,3] (smaller or equal) and [3,3,4,7,8] (bigger or equal)  
+
+This problem can be converted to a equivalent problem:  
+For finding [1,2,3,3] we need to find out the first larger item in the array (4)  
+and for [3,3,4,7,8] we need to find out the last smaller item in the array (2)  
+
+```go
+package main
+// BinarySearchLarger returns the first larger element than target in array
+func BinarySearchLarger(array []int, start, end, target int) int {
+    if start < 0 || end >= len(array) {
+        return -1
+    }
+    for start <= end {
+        mid := start + (end-start)/2
+        if array[mid] <= target {
+            start = mid + 1
+        } else {
+            end = mid - 1
+        }
+    }
+    return start
+}
+```
