@@ -117,9 +117,6 @@ func dfs(n *Node, visited map[*Node]bool, fn func(*Node)) {
 		dfs(p, visited, fn)
 	}
 	fn(n)
-	for c := range n.Children {
-		dfs(c, visited, fn)
-	}
 }
 
 func main() {
